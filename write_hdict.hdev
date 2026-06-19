@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.2" halcon_version="22.05.0.0">
+<procedure name="main">
+<interface/>
+<body>
+<l>create_dict (DataDict)</l>
+<c>*定义标注类别</c>
+<l>DataDict.class_ids:=[0,255]</l>
+<l>DataDict.class_names:=['background', 'defect']</l>
+<c>*定义背景类别，这里序号从1开始</c>
+<l>DataDict.class_custom_data:=[dict{is_bg_class:1},dict{}]</l>
+<c>*图像和mask路径</c>
+<l>DataDict.image_dir:='C:/Yilin_Heyu/dataset/Wafer1/labeling/wafer1_images/'</l>
+<l>DataDict.segmentation_dir:='C:/Yilin_Heyu/dataset/Wafer1/labeling/wafer1_images/_labels'</l>
+<c>*字典保存路径</c>
+<l>save_dir := 'C:/Users/Yilin/Desktop/test/wafer1.hdict'</l>
+<c>*数据名单（带后缀）</c>
+<l>file_name:='C:/Yilin_Heyu/dataset/Wafer1/labeling/names.txt'</l>
+<l>file_exists (file_name, FileExists)</l>
+<l>if(FileExists==1)</l>
+<l>    data_samples:=[]</l>
+<l>    open_file (file_name, 'input', FileHandle)</l>
+<l>    segf:='./'</l>
+<l>    id:=1</l>
+<l>    repeat</l>
+<c>        *IsEOF=1时结束</c>
+<l>        fread_line (FileHandle, oneline, IsEOF)</l>
+<l>        if(IsEOF==1)</l>
+<l>            break</l>
+<l>        endif</l>
+<l>        if(oneline=='' or oneline=='\n')</l>
+<l>            continue</l>
+<l>        endif</l>
+<l>        tuple_split(oneline,'\n',name)</l>
+<l>        sfn:=segf + name</l>
+<l>        dict_id := id - 1</l>
+<l>        data_samples[dict_id] := dict{image_id:id,image_file_name:name,segmentation_file_name:sfn}</l>
+<l>        id := id + 1</l>
+<l>    until (IsEOF)</l>
+<l>    DataDict.samples := data_samples</l>
+<l>endif</l>
+<c></c>
+<l>write_dict(DataDict, save_dir, [], [])</l>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>
